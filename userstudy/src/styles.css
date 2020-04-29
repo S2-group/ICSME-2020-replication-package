@@ -1,0 +1,16 @@
+body {
+    background: #6a1b9a;
+    color: white;
+    font-family: "Roboto";
+    text-align: center;
+    overflow: hidden;
+    width: 100%;
+    display: table;
+}
+
+#spacebar-hint {
+    padding: 20px;
+    background: #38006b;
+    font-size: 2em;
+    font-weight: 300;
+}

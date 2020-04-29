@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "target": "userstudy",
+      "public": "dist/userstudy",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

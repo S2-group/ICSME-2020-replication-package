@@ -1,0 +1,8 @@
+node_modules
+.vscode
+*.lock
+*.har
+*.log
+*.png
+*.jpeg
+package-lock.json

@@ -1,0 +1,43 @@
+<div>
+  <h2 *ngIf="!finished && index % 3 !== 0">Test {{ resultsIndex + 1 }}</h2>
+  <h2 *ngIf="!finished && index % 3 === 0">DEMO VIDEO</h2>
+  <video
+    *ngIf="!finished"
+    muted=""
+    [src]="'assets/' + videos[resultsIndex]"
+    type="video/mp4"
+    height="600"
+    #videoPlayer
+  ></video>
+
+  <h1 *ngIf="finished">DONE</h1>
+
+  <div *ngIf="finished">
+    <h3 *ngFor="let result of results; index as i">
+      Test {{ i + 1 }}: {{ round(result) }} ms
+    </h3>
+
+    <div style="display: flex; flex-direction: column;">
+      <button
+        style="cursor: pointer; color:white;background-color: red; font-size: 20px; border-radius: 8px; border: none; padding: 20px;"
+        ngxClipboard
+        [cbContent]="results"
+      >
+        Click me to copy your results
+      </button>
+      <a
+        style="margin-top: 10px; cursor: pointer; color:white;background-color: black; font-size: 20px; border-radius: 8px; border: none; padding: 20px;"
+        href="http://survey.jaspervanriet.nl"
+      >
+        Then go here
+      </a>
+    </div>
+  </div>
+
+  <div id="spacebar-hint" *ngIf="!finished">
+    <span *ngIf="!spacebarPressed">Press spacebar to start</span>
+    <span *ngIf="spacebarPressed">Press spacebar when website has loaded</span>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

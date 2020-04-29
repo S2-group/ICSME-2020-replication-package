@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "user-study-c459b": {
+      "hosting": {
+        "userstudy": [
+          "user-study-c459b"
+        ]
+      }
+    }
+  }
+}
