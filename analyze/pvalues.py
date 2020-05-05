@@ -3,20 +3,28 @@ import sys
 import numpy
 import pandas
 from scipy.stats import mannwhitneyu
+from statsmodels.stats.multitest import multipletests
 
-metricsToUse = {
-    'first-contentful-paint': 'First Contenful Paint',
-    'first-meaningful-paint': 'First Meaningful Paint',
-    'speed-index': 'Speed Index',
-    'total-blocking-time': 'Total Blocking Time',
-    'estimated-input-latency': 'Estimated Input Latency',
-    'first-cpu-idle': 'First CPU Idle',
-    'time-to-interactive': 'Time to Interactive',
-    'network-requests': 'Network Requests',
-    'dom-size': 'DOM Size',
-    'lowest-time-to-widget': 'Lowest Time to Widget',
-    'median-time-to-widget': 'Median Time to Widget',
-}
+metricsToUse = [
+    'first-contentful-paint',
+    'first-meaningful-paint',
+    'speed-index',
+    'total-blocking-time',
+    'estimated-input-latency',
+    'first-cpu-idle',
+    'time-to-interactive',
+    'network-requests',
+    'dom-size',
+    'lowest-time-to-widget',
+    'median-time-to-widget',
+]
+
+# Checks if all the entries in both arrays are identical
+def check_if_all_the_same(a, b):
+    for i in range(min(len(a), len(b))):
+        if a[i] - b[i] != 0:
+            return False
+    return True
 
 
 if __name__ == "__main__":
@@ -38,12 +46,7 @@ if __name__ == "__main__":
         pandas.read_csv(sys.argv[1] + '14.csv'),
     ]
 
-    # Checks if all the entries in both arrays are identical
-    def check_if_all_the_same(a, b):
-        for i in range(min(len(a), len(b))):
-            if a[i] - b[i] != 0:
-                return False
-        return True
+    pvals = []
 
 
     for i in range(1, len(Data)):
@@ -55,6 +58,15 @@ if __name__ == "__main__":
             if column in metricsToUse and not check_if_all_the_same(previous[column], current[column]):
                 print(column + ": " + str(
                     mannwhitneyu(x=previous[column], y=current[column], use_continuity=False)))
+                _, pval = mannwhitneyu(x=previous[column], y=current[column], use_continuity=False)
+                pvals.append(pval)
+    
+        results = multipletests(pvals, alpha=0.05, method='fdr_bh')
+        for j in range(0, len(results[1])):
+            pval = results[1][j]
+            print(metricsToUse[j] + ': ' + str(pval))
+        pvals = []
+
 
     print('Done!')
 

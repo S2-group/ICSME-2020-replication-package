@@ -2,9 +2,27 @@ import sys
 import numpy
 import pandas
 from scipy.stats.stats import pearsonr
+from scipy.stats.stats import kendalltau
+from scipy.stats import shapiro
 import matplotlib.pyplot as plt
 import seaborn
 import matplotlib.patches as mpatches
+from statsmodels.stats.multitest import multipletests
+from statsmodels.graphics.gofplots import qqplot
+
+metricsToUse = {
+    'first-contentful-paint': 'FCP',
+    'first-meaningful-paint': 'FMP',
+    'speed-index': 'SI',
+    'total-blocking-time': 'TBT',
+    'estimated-input-latency': 'EIL',
+    'first-cpu-idle': 'FCI',
+    'time-to-interactive': 'TTI',
+    'network-requests': 'NR',
+    'dom-size': 'DOM',
+    'lowest-time-to-widget': 'LTTW',
+    'median-time-to-widget': 'MTTW',
+}
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -15,13 +33,16 @@ if __name__ == "__main__":
     Data2 = pandas.read_csv(sys.argv[2])
 
     i = 0
+    p_values = []
 
     for column in Data1:
         metrics = Data1[column].to_numpy()
         users = numpy.asarray(Data2.median(axis=0))
         
-        if metrics[0] != 0:
-            print(column + ': ' + str(pearsonr(metrics, Data2.median(axis=0))))
+        if metrics[0] != 0 and column in metricsToUse:
+            _, p_value = kendalltau(metrics, Data2.median(axis=0))
+            print(column + ': ' + str(kendalltau(metrics, Data2.median(axis=0))))
+            p_values.append(p_value)
             plot = seaborn.scatterplot(data=[metrics, users], legend='brief')
 
             plt.plot(numpy.poly1d(numpy.polyfit([1, 2, 3, 4, 5, 6], metrics, 1))(numpy.unique([1, 2, 3, 4, 5, 6])), color='#4c72b0')
@@ -39,5 +60,7 @@ if __name__ == "__main__":
             figure.savefig('results/' + column + '.png')
             figure.clf()
             plt.close()
+
+    print(multipletests(p_values, alpha=0.05, method='holm'))
 
     print('Done!')
