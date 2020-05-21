@@ -53,16 +53,16 @@ if __name__ == "__main__":
     Data1 = pandas.read_csv(sys.argv[1], header=0)
     Data2 = pandas.read_csv(sys.argv[2])
 
-    fig, axs = plt.subplots(int(len(metricNames) / 3) + 1,
-                            3, figsize=((3 * 8, int(len(metricNames) / 3) * 5)))
+    fig, axs = plt.subplots(int(len(metricNames) / 2) + 1,
+                            2, figsize=((2 * 8, int(len(metricNames) / 2) * 5)))
     index = 0
     for column in Data1:
         metrics = Data1[column].to_numpy()
         users = numpy.asarray(Data2.median(axis=0))
 
         if metrics[0] != 0 and column in metricNames:
-            rowIndex = int(index / 3)
-            columnIndex = int(index % 3)
+            rowIndex = int(index / 2)
+            columnIndex = int(index % 2)
             ax = axs[rowIndex, columnIndex]
 
             plot = generateScatter(Data2, ax)
@@ -70,23 +70,19 @@ if __name__ == "__main__":
             generateMetricPoints(Data1, ax)
 
             # Draw best fit lines
-            print('row: ' + str(rowIndex) + ' col: ' + str(columnIndex))
             ax.plot(numpy.poly1d(numpy.polyfit([1, 2, 3, 4, 5, 6], metrics, 1))(
-                numpy.unique([1, 2, 3, 4, 5, 6])), color='#B943FF', linewidth=1)
+                numpy.unique([1, 2, 3, 4, 5, 6])), color='#FF390F', linewidth=1)
             ax.plot(numpy.poly1d(numpy.polyfit([1, 2, 3, 4, 5, 6], users, 1))(
                 numpy.unique([1, 2, 3, 4, 5, 6])), color='black', linewidth=1)
 
             # Need to help matplotlib with the legend
             metricsLegend = mpatches.Patch(
-                color='#B943FF', label=metricNames[column])
+                color='#FF390F', label=metricNames[column])
             userLegend = mpatches.Patch(color='#4FC1F8', label='uPLT')
             ax.legend(
                 handles=[metricsLegend, userLegend])
 
             ax.set(xlabel='Videos', ylabel='Time (ms)',)
-            # ax.xlabel('Videos')
-            # ax.ylabel('Time (ms)')
-            # ax.set_xticks([0, 1, 2, 3, 4, 5], subjects)
             ax.set_ylim([0, 12000])
             ax.set_xticklabels(subjects, fontdict=None, minor=False)
 
