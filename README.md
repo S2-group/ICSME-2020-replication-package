@@ -21,7 +21,7 @@ TODO
 
 This replication package is structured as follows:
 
-- Performance benchmarking tools can be found in the `metrics` and `metrics-ff` folders
+- Performance benchmarking tools can be found in the `metrics` and `metrics-ff` folders. The results can be found in `results`.
 - Analysis scripts and the raw data can be found in the `analyze` and `network` folders
 - User study results, the app used, the experiment guide given to participants, and the analysis scripts can be found in the `userstudy` and `userstudy-tools` folders
 
