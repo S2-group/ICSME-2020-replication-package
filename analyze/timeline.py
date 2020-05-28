@@ -4,6 +4,15 @@ import pandas
 import seaborn
 import matplotlib.pyplot as plt
 
+"""
+
+This script creates a timeline of interventions, across all metrics
+declared in `metricsToUse`. If the p-value for the combination of
+intervention and metric was statistically significant, it will be
+marked with an S denoting significance.
+
+"""
+
 pvalues_desktop = [
     [False, True, True, False,  False, True, True,  False,
         True,  False, True, True, True,  False, True, ],  # FCP
@@ -150,20 +159,6 @@ colors = [
     '#7CF642',
     '#FF390F',
     '#F6B42A',
-    '#4FC1F8',
-    '#35F2CD',
-    '#B943FF',
-    '#FF3F85',
-    '#7CF642',
-    '#FF390F',
-    '#F6B42A',
-    '#4FC1F8',
-    '#35F2CD',
-    '#B943FF',
-    '#FF3F85',
-    '#7CF642',
-    '#FF390F',
-    '#F6B42A',
 ]
 
 metricsToUse = {
@@ -179,6 +174,30 @@ metricsToUse = {
     'lowest-time-to-widget': 'LTTW',
     'median-time-to-widget': 'MTTW',
 }
+
+
+def draw_significance(plot, metricsIndex, intervention):
+    bbox_props = dict(boxstyle="square,pad=0.2",
+                      fc="#f2f2f2", ec=None, lw=0)
+    if (pvalues_mobile[metricsIndex][intervention]):
+        plot.annotate('S', color="#ed028c", fontsize=14, xy=(
+            0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
+    elif intervention == 0:
+        plot.annotate('B', color="#000000", fontsize=14, xy=(
+            0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
+
+
+def draw_left_spine(plot, column):
+    plot.annotate(metricsToUse[column], xy=(0, 0.5), xytext=(-plot.yaxis.labelpad - 10, 0),
+                  xycoords=plot.yaxis.label, textcoords='offset points',
+                  size='20', ha='right', va='center')
+
+
+def draw_top_spine(plot, intervention):
+    plot.annotate('Baseline' if interventions == 0 else 'I' + str(interventions), xy=(0.5, 1), xytext=(0, 5),
+                  xycoords='axes fraction', textcoords='offset points',
+                  size='16', ha='center', va='baseline')
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -204,55 +223,42 @@ if __name__ == "__main__":
 
     interventions = 0
 
-    figure, ax = plt.subplots(len(metricsToUse), len(
+    figure, axes = plt.subplots(len(metricsToUse), len(
         Data), figsize=(len(Data) * 1.5, len(metricsToUse) * 2))
     for improvement in Data:
         metricsIndex = 0
         for column in improvement:
             if column in metricsToUse:
-                ax[metricsIndex, interventions] = seaborn.boxenplot(
-                    data=improvement[column], ax=ax[metricsIndex, interventions], color=colors[metricsIndex])
-                ax[metricsIndex, interventions].set(xticklabels=[''], ylim=(
+                plot = axes[metricsIndex, interventions]
+
+                plot = seaborn.boxenplot(
+                    data=improvement[column], ax=plot, color=colors[metricsIndex])
+                plot.set(xticklabels=[''], ylim=(
                     yAxixMinSize[column], yAxixMaxSize[column]))
-                ax[metricsIndex, interventions].grid(linewidth=0.5)
+                plot.grid(linewidth=0.5)
 
                 if column in timeMetrics:
-                    ax[metricsIndex, interventions].set(ylabel='Time (ms)')
+                    plot.set(ylabel='Time (ms)')
                 else:
-                    ax[metricsIndex, interventions].set(ylabel='Quantity')
+                    plot.set(ylabel='Quantity')
 
                 seaborn.despine(left=False, right=False, top=False,
-                                bottom=False, ax=ax[metricsIndex, interventions])
+                                bottom=False, ax=plot)
 
                 plt.subplots_adjust(left=0.125, bottom=0.1,
                                     right=0.9, top=0.9, wspace=0.0, hspace=0.5)
                 plt.grid(True)
 
                 if interventions == 0:
-                    ax[metricsIndex, interventions].annotate(metricsToUse[column], xy=(0, 0.5), xytext=(-ax[metricsIndex, interventions].yaxis.labelpad - 10, 0),
-                                                             xycoords=ax[metricsIndex,
-                                                                         interventions].yaxis.label, textcoords='offset points',
-                                                             size='20', ha='right', va='center')
+                    draw_left_spine(plot, column)
                 else:
-                    # ax[metricsIndex, iterations].set_yticks([])
-                    ax[metricsIndex, interventions].set(
-                        ylabel='', yticklabels=[''])
+                    plot.set(ylabel='', yticklabels=[''])
 
-                bbox_props = dict(boxstyle="square,pad=0.2",
-                                  fc="#f2f2f2", ec=None, lw=0)
-                if (pvalues_mobile[metricsIndex][interventions]):
-                    ax[metricsIndex, interventions].annotate('S', color="#ed028c", fontsize=14, xy=(
-                        0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
-                elif interventions == 0:
-                    ax[metricsIndex, interventions].annotate('B', color="#000000", fontsize=14, xy=(
-                        0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
-
+                draw_significance(plot, metricsIndex, interventions)
 
                 metricsIndex += 1
 
-        ax[0, interventions].annotate('Baseline' if interventions == 0 else 'I' + str(interventions), xy=(0.5, 1), xytext=(0, 5),
-                                      xycoords='axes fraction', textcoords='offset points',
-                                      size='16', ha='center', va='baseline')
+        draw_top_spine(axes[0, interventions], interventions)
         interventions += 1
 
     figure.tight_layout()
