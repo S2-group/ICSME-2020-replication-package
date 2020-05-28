@@ -122,6 +122,8 @@ metricsToUse = {
     'estimated-input-latency': 'EIL',
     'first-cpu-idle': 'FCI',
     'time-to-interactive': 'TTI',
+    'network-requests': 'NR',
+    'dom-size': 'DOM',
     'lowest-time-to-widget': 'LTTW',
     'median-time-to-widget': 'MTTW',
 }
