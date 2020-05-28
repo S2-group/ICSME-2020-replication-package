@@ -262,7 +262,7 @@ if __name__ == "__main__":
         interventions += 1
 
     figure.tight_layout()
-    figure.savefig('../figures/timeline.png')
+    figure.savefig('../figures/timeline.pdf')
     figure.clf()
     plt.close()
 
