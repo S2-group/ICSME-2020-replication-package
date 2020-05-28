@@ -4,6 +4,36 @@ import pandas
 import seaborn
 import matplotlib.pyplot as plt
 
+pvalues_desktop = [
+    [False, True, True, False,  False, True, True,  False, True,  False, True, True, True,  False, True, ], # FCP
+    [False, False, False, False,  False, True,  False, True,  False,  False, True, True,  False, True, True, ], # FMP
+    [False, False,False,  False,  False, True, True, True, True,  False,  False, True,  False, True, True, ], # SI
+    [False, True,False,  False, True, True, True, True, True, True, True, True,  False, True, True, ], # TBT
+    [False, False, False,  False,  False,  False, True,  False,  False,  False,  False, True,  False, True, True, ], # EIL
+    [False, True, False,  False,  False, True, True, True, True, True,  False, True,  False, True, True, ], # FCI
+    [False, True, False,  False,  False, True, True, True, True, True, True, True,  False, True, True, ], # TTI
+    [False, False, True,  False, True, True, False, True, True,  False, True, True, True, True, True, ], # NR
+    [False, False, True,  False, True,  False,  True, True, True, True,  False, True,  False, True, True, ], # DOM
+    [False, False, False,  False, False,  False, True, True, True, True, True, True,  False, True, True, ], # LTTW
+    [False, False, False,  False, False, True, True, True, True, True, True, True,  False, True, True, ]  # MTTW
+
+]
+
+pvalues_mobile = [
+    [False, True, True, True,  False, True, True,  False, True,  False, True,  False,  False,  False, True, ], # FCP
+    [False,False, True, True, True,  False, True, True, True,  False,  False,  False,  False,  False, True, ], # FMP
+    [False, True, True, False,  False, True,  False, True, True, True,  False,  False,  False,  False, True, ], # SI
+    [False, True, False, True, True, True, True, True, True, True,  False,  False,  False,  False, True, ], # TBT
+    [False, True, False, False,  False,  False,  False, True, True, True,  False, True, True,  False, True, ], # EIL
+    [False, True, False, False, True, True,  False, True, True, True,  False,  False,  False,  False, True, ], # FCI
+    [False, True, False, True, True, True,  False, True, True, True,  False,  False,  False,  False, True, ], # TTI
+    [False, False, True, True, True, True,  False, True, True,  False, True, True, True, True, True, ], # NR
+    [False, True, True, True, True, True, True, True, True, True,  False, True,  False, True, True, ], # DOM
+    [False, True, False, False,  False, True,  False, True, True, True,  False,  False,  False,  False, True, ], # LTTW
+    [False, True, False, False, True,  False,  False, True, True, True,  False,  False,  False,  False, True, ]  # MTTW
+
+]
+
 timeMetrics = [
     'first-contentful-paint',
     'first-meaningful-paint',
@@ -150,42 +180,49 @@ if __name__ == "__main__":
         pandas.read_csv(sys.argv[1] + '14.csv'),
     ]
 
-    iterations = 0
+    interventions = 0
     
     figure, ax = plt.subplots(len(metricsToUse), len(Data), figsize=(len(Data) * 1.5, len(metricsToUse) * 2))
     for improvement in Data:
         metricsIndex = 0
         for column in improvement:
             if column in metricsToUse:
-                ax[metricsIndex, iterations] = seaborn.boxenplot(data=improvement[column], ax=ax[metricsIndex, iterations], color=colors[metricsIndex])
-                ax[metricsIndex, iterations].set(xticklabels=[''], ylim=(yAxixMinSize[column], yAxixMaxSize[column]))
-                ax[metricsIndex, iterations].grid(linewidth=0.5)
+                ax[metricsIndex, interventions] = seaborn.boxenplot(data=improvement[column], ax=ax[metricsIndex, interventions], color=colors[metricsIndex])
+                ax[metricsIndex, interventions].set(xticklabels=[''], ylim=(yAxixMinSize[column], yAxixMaxSize[column]))
+                ax[metricsIndex, interventions].grid(linewidth=0.5)
 
                 if column in timeMetrics:
-                    ax[metricsIndex, iterations].set(ylabel='Time (ms)')
+                    ax[metricsIndex, interventions].set(ylabel='Time (ms)')
                 else:
-                    ax[metricsIndex, iterations].set(ylabel='Quantity')
+                    ax[metricsIndex, interventions].set(ylabel='Quantity')
 
-                seaborn.despine(left=False, right=False, top=False, bottom=False, ax=ax[metricsIndex, iterations])
+                seaborn.despine(left=False, right=False, top=False, bottom=False, ax=ax[metricsIndex, interventions])
 
                 plt.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9, wspace=0.0, hspace=0.5)
                 plt.grid(True)
 
-                if iterations == 0:
-                    ax[metricsIndex, iterations].annotate(metricsToUse[column], xy=(0, 0.5), xytext=(-ax[metricsIndex, iterations].yaxis.labelpad - 10, 0),
-                                xycoords=ax[metricsIndex, iterations].yaxis.label, textcoords='offset points',
+                if interventions == 0:
+                    ax[metricsIndex, interventions].annotate(metricsToUse[column], xy=(0, 0.5), xytext=(-ax[metricsIndex, interventions].yaxis.labelpad - 10, 0),
+                                xycoords=ax[metricsIndex, interventions].yaxis.label, textcoords='offset points',
                                 size='20', ha='right', va='center')
                 else:
                     # ax[metricsIndex, iterations].set_yticks([])
-                    ax[metricsIndex, iterations].set(ylabel='', yticklabels=[''])
+                    ax[metricsIndex, interventions].set(ylabel='', yticklabels=[''])
+
+                bbox_props = dict(boxstyle="square,pad=0.2", fc="#f2f2f2", ec=None, lw=0)
+                if (pvalues_mobile[metricsIndex][interventions]):
+                    ax[metricsIndex, interventions].annotate('S', color="#ed028c", fontsize=14, xy=(0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
+                elif interventions == 0:
+                    ax[metricsIndex, interventions].annotate('B', color="#000000", fontsize=14, xy=(0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
+
 
 
                 metricsIndex += 1
 
-        ax[0, iterations].annotate('Baseline' if iterations == 0 else 'I' + str(iterations), xy=(0.5, 1), xytext=(0, 5),
+        ax[0, interventions].annotate('Baseline' if interventions == 0 else 'I' + str(interventions), xy=(0.5, 1), xytext=(0, 5),
                     xycoords='axes fraction', textcoords='offset points',
                     size='16', ha='center', va='baseline')
-        iterations += 1
+        interventions += 1
 
     figure.tight_layout()
     figure.savefig('../figures/timeline.png')
