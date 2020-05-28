@@ -180,7 +180,7 @@ if __name__ == "__main__":
 
                 metricsIndex += 1
 
-        ax[0, iterations].annotate('Start' if iterations == 0 else 'Inter. ' + str(iterations), xy=(0.5, 1), xytext=(0, 5),
+        ax[0, iterations].annotate('Baseline' if iterations == 0 else 'I' + str(iterations), xy=(0.5, 1), xytext=(0, 5),
                     xycoords='axes fraction', textcoords='offset points',
                     size='16', ha='center', va='baseline')
         iterations += 1
