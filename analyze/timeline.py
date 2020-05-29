@@ -182,9 +182,6 @@ def draw_significance(plot, metricsIndex, intervention):
     if (pvalues_mobile[metricsIndex][intervention]):
         plot.annotate('S', color="#ed028c", fontsize=14, xy=(
             0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
-    elif intervention == 0:
-        plot.annotate('B', color="#000000", fontsize=14, xy=(
-            0.85, 0.88), xycoords='axes fraction', bbox=bbox_props)
 
 
 def draw_left_spine(plot, column):
