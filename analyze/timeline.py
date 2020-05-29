@@ -129,7 +129,7 @@ yAxixMaxSize = {
     'estimated-input-latency': 1500,
     'network-rtt': 100,
     'network-requests': 300,
-    'dom-size': 20000,
+    'dom-size': 16000,
     'total-transfer-size': 800000,
     'average-transfer-size': 5000,
     'median-transfer-size': 1500,
