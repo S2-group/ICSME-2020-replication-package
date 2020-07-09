@@ -23,6 +23,9 @@ const OPTS = {
 // Number of lighthouse runs
 const RUNS = 30;
 
+const METRIC_HEADERS =
+  'first-contentful-paint,first-meaningful-paint,speed-index,total-blocking-time,estimated-input-latency,time-to-first-byte,first-cpu-idle,time-to-interactive,network-rtt,network-requests,dom-size,total-transfer-size,average-transfer-size,median-transfer-size,90th-percentile-transfer-size,95th-percentile-transfer-size,99th-percentile-transfer-size,average-transfer-time,median-transfer-time,90th-percentile-transfer-time,95th-percentile-transfer-time,99th-percentile-transfer-time,number-api-calls,lowest-time-to-widget,median-time-to-widget\n';
+
 function avg(list) {
   if (list.length == 0) {
     return 0;
@@ -212,10 +215,7 @@ async function main() {
   const file = createFileName(args.file);
   const writeStream = fs.createWriteStream(file, { flags: 'a' });
 
-  const headers =
-    'first-contentful-paint,first-meaningful-paint,speed-index,total-blocking-time,estimated-input-latency,time-to-first-byte,first-cpu-idle,time-to-interactive,network-rtt,network-requests,dom-size,total-transfer-size,average-transfer-size,median-transfer-size,90th-percentile-transfer-size,95th-percentile-transfer-size,99th-percentile-transfer-size,average-transfer-time,median-transfer-time,90th-percentile-transfer-time,95th-percentile-transfer-time,99th-percentile-transfer-time,number-api-calls,lowest-time-to-widget,median-time-to-widget\n';
-
-  writeStream.write(headers);
+  writeStream.write(METRIC_HEADERS);
 
   // Do a single warmup run in case the HTTP server needs to warm up
   // This can be an issue when running on localhost
