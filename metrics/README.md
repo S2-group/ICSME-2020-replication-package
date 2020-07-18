@@ -1,6 +1,5 @@
 # Measuring metrics
-
-Go to `metrics`. Install the dependencies via `npm install`, or manually:
+Install the dependencies via `npm install`, or manually:
 
 ```
 npm install lighthouse
