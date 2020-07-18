@@ -9,10 +9,20 @@ const fs = require('fs');
 const chromeHarCapturer = require('chrome-har-capturer');
 const percentile = require('percentile');
 
+/**
+ * Chrome port. When testing on android, you'll want to change this
+ * to the port used by the Android ADB TCP forwarding
+ */
 const PORT = 8041;
-const FOLDER = '../results/';
+
+/**
+ * Default file name
+ */
 const FILE = 'result.csv';
 
+/**
+ * Lighthouse config options
+ */
 const OPTS = {
   port: PORT,
   disableStorageReset: true,
@@ -20,9 +30,14 @@ const OPTS = {
   onlyCategories: ['performance'],
 };
 
-// Number of lighthouse runs
+/**
+ * Number of Lighthouse runs
+ */
 const RUNS = 30;
 
+/**
+ * This the header of the .csv file, including all metrics that are measured
+ */
 const METRIC_HEADERS =
   'first-contentful-paint,first-meaningful-paint,speed-index,total-blocking-time,estimated-input-latency,time-to-first-byte,first-cpu-idle,time-to-interactive,network-rtt,network-requests,dom-size,total-transfer-size,average-transfer-size,median-transfer-size,90th-percentile-transfer-size,95th-percentile-transfer-size,99th-percentile-transfer-size,average-transfer-time,median-transfer-time,90th-percentile-transfer-time,95th-percentile-transfer-time,99th-percentile-transfer-time,number-api-calls,lowest-time-to-widget,median-time-to-widget\n';
 
@@ -59,10 +74,6 @@ function median(list) {
 
 async function runLighthouse(url) {
   return lighthouse(url, OPTS, null).then((results) => {
-    // use results.lhr for the JS-consumeable output
-    // https://github.com/GoogleChrome/lighthouse/blob/master/types/lhr.d.ts
-    // use results.report for the HTML/JSON/CSV output as a string
-    // use results.artifacts for the trace/screenshots/other specific case you need (rarer)
     return results;
   });
 }
@@ -101,8 +112,8 @@ function getMedianTimeToWidget(userTimings) {
  * Runs Google Lighthouse on the given url and writes metrics to the given
  * file stream
  *
- * @param {*} url
- * @param {*} writeStream file stream of the file to write to
+ * @param url the url of the web page to test
+ * @param writeStream file stream of the file to write to
  */
 async function doTest(url, writeStream) {
   const results = await runLighthouse(url);
@@ -171,15 +182,20 @@ async function doTest(url, writeStream) {
   writeStream.write(line);
 }
 
-function createFileName(file) {
-  if (file == null) {
+/**
+ * Creates the file path for the .csv file
+ * @param file file name of the .csv, including extension
+ * @param folder folder to place the file
+ */
+function createFileName(file, folder) {
+  if (!file) {
     file = FILE;
   }
 
   try {
     let i = 2;
-    while (fs.existsSync(FOLDER + file)) {
-      console.log('' + file + ' already exists! Appending ' + i);
+    while (fs.existsSync(folder + file)) {
+      console.log(`${file} already exists! Appending ${i}`);
 
       // result.csv -> result2.csv
       var index = file.indexOf('.');
@@ -190,12 +206,12 @@ function createFileName(file) {
   } catch (err) {
     console.error(err);
   }
-  return FOLDER + file;
+  return folder + file;
 }
 
 function help() {
   console.error(
-    'How to use this script:\n\n--url: the url to test\n--file: where to save the csv. If not provided, result.csv is used. All files are saved to ../results\n--runs: The number of runs to perform'
+    'How to use this script:\n\n--url: the url to test\n--file: where to save the csv. If not provided, result.csv is used.\n--folder: folder to save the file in. By default, the current folder is used. \n--runs: The number of runs to perform\n\n'
   );
   process.exit(1);
 }
@@ -203,16 +219,21 @@ function help() {
 async function main() {
   const args = minimist(process.argv.slice(2));
 
-  if (args.url == null) {
+  if (!args.url) {
     help();
   }
 
   let runs = args.runs;
-  if (args.runs == null) {
+  if (!args.runs) {
     runs = RUNS;
   }
 
-  const file = createFileName(args.file);
+  let folder = args.folder;
+  if (!args.folder) {
+    folder = '';
+  }
+
+  const file = createFileName(args.file, folder);
   const writeStream = fs.createWriteStream(file, { flags: 'a' });
 
   writeStream.write(METRIC_HEADERS);
