@@ -1,8 +1,6 @@
 # Measuring metrics
 
-Go to the root of the repo. Create the folder `results`.
-
-Go to `metrics`. Install the dependencies via NPM:
+Go to `metrics`. Install the dependencies via `npm install`, or manually:
 
 ```
 npm install lighthouse
@@ -21,7 +19,5 @@ Now launch chrome-debug in the background using the start-chrome.bat or start-ch
 Now run the script:
 
 ```
-node main.js --url https://google.com --file myresult.csv --runs 30
+npm start -- --url https://google.com --file myresult.csv --folder somefolder --runs 30
 ```
-
-You will find the result in `results` folder.
