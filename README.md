@@ -1,6 +1,6 @@
 # 30MHz case study in web performance – Replication package
 
-This repository contains the replication package and dataset of the 30MHz case study on web performance.
+This repository contains the replication package and dataset of the 30MHz case study on web performance. Using this repo, one can generate performance benchmark results for any web page, or replicate the results of the case study, as well as its statistical analysis.
 
 This study has been designed, developed, and reported by the following investigators:
 
@@ -21,7 +21,7 @@ TODO
 
 This replication package is structured as follows:
 
-- Performance benchmarking tools can be found in the `metrics` and `metrics-ff` folders. The results can be found in `results`. The first results is the baseline situation.
+- Performance benchmarking tools can be found in the `metrics` and `metrics-ff` folders, for Chrome and Firefox respectively. The results can be found in `results`. The first result is the baseline situation.
 - Analysis scripts and the raw data can be found in the `analyze` and `network` folders
 - User study results, the app used, the experiment guide given to participants, and the analysis scripts can be found in the `userstudy` and `userstudy-tools` folders
 
