@@ -12,9 +12,19 @@ For any information, interested researchers can contact us by sending an email t
 The full dataset including raw data, performance benchmarking tools, and analysis scripts produced during the study are available below.
 
 ## How to cite the dataset
-If the dataset is helping your research, consider to cite it is as follows, thanks!
+If the dataset or the results of our study are helping your research, consider to cite our study as follows, thanks!
 
-TODO
+```
+@inproceedings{ICSME_2020,
+  author    = {Jasper van Riet and Flavia Paganelli and Ivano Malavolta},
+  title     = {{From 6.2 to 0.15 seconds - an Industrial Case Study on Mobile Web Performance}},
+  booktitle = {{IEEE} International Conference on Software Maintenance and Evolution,
+               {(ICSME)}},
+  pages     = {to appear},
+  year      = {2020},
+  url       = {https://github.com/S2-group/ICSME-2020-replication-package/blob/master/ICSME_2020.pdf}
+}
+```
 
 ### Overview of the replication package
 ---
