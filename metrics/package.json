@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "chrome-har-capturer": "^0.13.7",
-    "lighthouse": "^6.1.1",
+    "lighthouse": "^5.6.0",
     "minimist": "^1.2.5",
     "percentile": "^1.4.0"
   }
